@@ -218,6 +218,7 @@ function Network() {
     this.errorInfluenceFactor = 0.1;
     this.setWeightsByGematria = false;
     this.generatedSentence = "";
+    this.generatedSentenceGematriaInfo = "";
 
     this.clearAll = function() {
         this.words = [];
@@ -261,7 +262,7 @@ function Network() {
             sum += this.words[i].activation;
         }
         sum /= this.words.length;
-        if (sum > this.sentenceGenerationThreshold) {
+        if (sum > this.sentenceGenerationThreshold || sum < -this.sentenceGenerationThreshold) {
             console.log("generating sentence");
             console.log("activation sum: " + sum);
             this.generateSentence();
@@ -275,6 +276,14 @@ function Network() {
         }
         console.log(sentence);
         this.generatedSentence = sentence;
+        //gematria data plot
+        var gematriaData = "";
+        var totalGematria = 0;
+        for (var i = 0; i < this.words.length; i++) {
+            gematriaData += routeToRoot(this.words[i].gematria) + " | ";
+            totalGematria += this.words[i].gematria;
+        }
+        this.generatedSentenceGematriaInfo = gematriaData + " total gematria: " + routeToRoot(totalGematria);
     }
 
 
