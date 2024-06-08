@@ -160,7 +160,7 @@
             //event listener for slider
             dom.addEventListener("input", function() {
                 if (dom === slider) {
-                    var value = dom.value*200;
+                    var value = dom.value*10;
                     sanaverkko.setWordGenerationThreshold(value);
                     monitor = document.getElementById("wordGenerationThreshold");
                     monitor.innerHTML = "Word generation threshold: " + value;
@@ -218,7 +218,7 @@
         function createElements() {
             input = createInput(10, 250);
             button = createButton("Add sentence", 10, 280);
-            slider = createSlider(0, 1, 0.5, 0.01, 200, 10);
+            slider = createSlider(-2, 2, 0.5, 0.01, 200, 10);
             slider2 = createSlider(0, 1, 0.5, 0.01, 200, 40);
             slider3 = createSlider(0, 1, 0.5, 0.01, 200, 70);
             slider4 = createSlider(0, 1, 0.5, 0.01, 200, 100);
@@ -242,20 +242,60 @@
         document.body.appendChild(log);
         log.style.position = "absolute";
         log.style.left = "10px";
-        log.style.top = "300px";
+        log.style.top = "400px";
+        log.style.color = "#ff22aa";
+        log.style.fontSize = "30px";
+        log.style.overflow = "scroll";
+        log.style.height = "200px";
         log.id = "log";
 
-        function logSentence() {
-            var log = document.getElementById("log");
-            log.style.color = "#ff22aa";
-            log.style.fontSize = "30px";
-            log.innerHTML += "<br>" + sanaverkko.generatedSentence;
-            log.innerHTML += "<br>" + sanaverkko.generatedSentenceGematriaInfo;
-            log.scrollTop = log.scrollHeight;
-            log.style.overflow = "auto";
-            log.style.height = "200px";
+        var hiddenLog = document.createElement("div");
+        hiddenLog.style.bgcolor = "black";
+        hiddenLog.style.color = "white";
+        hiddenLog.style.position = "absolute";
+        hiddenLog.style.left = "200px";
+        hiddenLog.style.top = "400px";
+        hiddenLog.style.width = "500px";
+        hiddenLog.style.height = "200px";
+        hiddenLog.style.overflow = "scroll";
+        hiddenLog.style.display = "none";
+        hiddenLog.id = "hiddenLog";
+        document.body.appendChild(hiddenLog);
 
+        function logSentence() {
+            var hiddenLog = document.getElementById("hiddenLog");
+            hiddenLog.innerHTML += "<br>" + sanaverkko.generatedSentence;
+            hiddenLog.innerHTML += "<br>" + sanaverkko.generatedSentenceGematriaInfo;
         }
+
+        var clearingButton = document.createElement("button");
+        clearingButton.innerHTML = "Clear log";
+        document.body.appendChild(clearingButton);
+        clearingButton.style.position = "absolute";
+        clearingButton.style.left = "200px";
+        clearingButton.style.top = "630px";
+        clearingButton.addEventListener("click", function() {
+            var hiddenLog = document.getElementById("hiddenLog");
+            hiddenLog.innerHTML = "";
+        });
+
+        function toggleHiddenLogVisibility() {
+            var hiddenLog = document.getElementById("hiddenLog");
+            if (hiddenLog.style.display === "block") {
+                hiddenLog.style.display = "none";
+            } else {
+                hiddenLog.style.display = "block";
+            }
+        }
+
+        hlButton = document.createElement("button");
+        hlButton.innerHTML = "Show hidden log";
+        document.body.appendChild(hlButton);
+        hlButton.style.position = "absolute";
+        hlButton.style.left = "200px";
+        hlButton.style.top = "610px";
+        hlButton.addEventListener("click", toggleHiddenLogVisibility);
+
 
         //read db
         readDB("nsoe.txt");

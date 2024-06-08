@@ -157,10 +157,11 @@ function Word(string, network) {
         }
         this.activation += this.activationChangeFactor * activationSign;
 
-        if (this.activation < this.wordGenerationThreshold || this.activation > -this.wordGenerationThreshold) {
+        if (this.activation > this.wordGenerationThreshold || this.activation < -this.wordGenerationThreshold) {
             console.log("generating new word");
             var newWord = getWordFromDB(this.gematria);
             this.changeWord(newWord);
+            this.activation = 0;
         }
         return this.activation;
     }
