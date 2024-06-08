@@ -155,7 +155,6 @@ function Word(string, network) {
         if (sum < 0) {
             activationSign = -1;
         }
-        this.activation += this.activationChangeFactor * activationSign;
 
         if (this.activation > this.wordGenerationThreshold || this.activation < -this.wordGenerationThreshold) {
             console.log("generating new word");
@@ -163,6 +162,7 @@ function Word(string, network) {
             this.changeWord(newWord);
             this.activation = 0;
         }
+        this.activation += this.activationChangeFactor * activationSign;
         return this.activation;
     }
 
@@ -220,6 +220,12 @@ function Network() {
     this.setWeightsByGematria = false;
     this.generatedSentence = "";
     this.generatedSentenceGematriaInfo = "";
+    this.dbSource = "";
+
+    this.setDBSource = function(source) {
+        this.dbSource = source;
+        readDB(this.dbSource);
+    }
 
     this.clearAll = function() {
         this.words = [];

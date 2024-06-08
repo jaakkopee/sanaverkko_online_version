@@ -41,6 +41,15 @@
         var slider8;
         var tickbox;
 
+        dom = document.createElement("p");
+        dom.innerHTML = "set weights by gematria";
+        document.body.appendChild(dom);
+        dom.style.position = "absolute";
+        dom.style.left = "10px";
+        dom.style.top = "300px";
+        dom.style.color = "white";
+        dom.id = "setWeightsByGematria";
+        
         //parameter monitoring
         dom = document.createElement("p");
         dom.innerHTML = "Word generation threshold";
@@ -114,7 +123,27 @@
         dom.style.color = "white";
         dom.id = "targetActivation";
 
-
+        function createTickBox(x, y) {
+            var dom = document.createElement("input");
+            dom.type = "checkbox";
+            document.body.appendChild(dom);
+            dom.addEventListener("change", function() {
+                if (dom.checked) {
+                    sanaverkko.setSetWeightsByGematria(true);
+                    tickbox = document.getElementById("setWeightsByGematria");
+                    tickbox.innerHTML = "set weights by gematria";
+                } else {
+                    sanaverkko.setSetWeightsByGematria(false);
+                    tickbox = document.getElementById("setWeightsByGematria");
+                    tickbox.innerHTML = "set weights by inheritance";
+                }
+            });
+            //position the tickbox element
+            dom.style.position = "absolute";
+            dom.style.left = x + "px";
+            dom.style.top = y + "px";
+            return dom;
+        }
 
         function createInput(x, y) {
             var dom = document.createElement("input");
@@ -226,12 +255,7 @@
             slider6 = createSlider(0, 1, 0.5, 0.01, 200, 160);
             slider7 = createSlider(-5, 5, 0, 0.01, 200, 190);
             slider8 = createSlider(-5, 5, 0, 0.01, 200, 220);
-            tickbox = document.createElement("input");
-            tickbox.type = "checkbox";
-            document.body.appendChild(tickbox);
-            tickbox.style.position = "absolute";
-            tickbox.style.left = "200";
-            tickbox.style.top = "190";
+            tickbox = createTickBox(200, 300);
         }
         //add sliders to dom
         createElements();
@@ -253,9 +277,9 @@
         hiddenLog.style.bgcolor = "black";
         hiddenLog.style.color = "white";
         hiddenLog.style.position = "absolute";
-        hiddenLog.style.left = "200px";
+        hiddenLog.style.left = "20px";
         hiddenLog.style.top = "400px";
-        hiddenLog.style.width = "500px";
+        hiddenLog.style.width = "800px";
         hiddenLog.style.height = "200px";
         hiddenLog.style.overflow = "scroll";
         hiddenLog.style.display = "none";
@@ -272,7 +296,7 @@
         clearingButton.innerHTML = "Clear log";
         document.body.appendChild(clearingButton);
         clearingButton.style.position = "absolute";
-        clearingButton.style.left = "200px";
+        clearingButton.style.left = "20px";
         clearingButton.style.top = "630px";
         clearingButton.addEventListener("click", function() {
             var hiddenLog = document.getElementById("hiddenLog");
@@ -292,16 +316,50 @@
         hlButton.innerHTML = "Show hidden log";
         document.body.appendChild(hlButton);
         hlButton.style.position = "absolute";
-        hlButton.style.left = "200px";
+        hlButton.style.left = "20px";
         hlButton.style.top = "610px";
         hlButton.addEventListener("click", toggleHiddenLogVisibility);
 
+        //menu for db source setting
+        var dbSource = document.createElement("div");
+        dbSource.innerHTML = "Database source:";
+        document.body.appendChild(dbSource);
+        dbSource.style.position = "absolute";
+        dbSource.style.left = "10px";
+        dbSource.style.top = "350px";
+        dbSource.style.color = "white";
+        dbSource.style.fontSize = "20px";
+        dbSource.id = "dbSource";
 
-        //read db
-        readDB("nsoe.txt");
+        dbSourceButton = document.createElement("button");
+        dbSourceButton.innerHTML = "Read from file";
+        document.body.appendChild(dbSourceButton);
+        dbSourceButton.style.position = "absolute";
+        dbSourceButton.style.left = "10px";
+        dbSourceButton.style.top = "380px";
+        dbSourceButton.addEventListener("click", function() {
+            if (sanaverkko.dbSource === "nsoe.txt") {
+                sanaverkko.dbSource = "aba.txt";
+            } else if (sanaverkko.dbSource === "aba.txt") {
+                sanaverkko.dbSource = "kalevala.txt";
+            } else if (sanaverkko.dbSource === "kalevala.txt") {
+                sanaverkko.dbSource = "saimaharmaja.txt";
+            } else if (sanaverkko.dbSource === "saimaharmaja.txt") {
+                sanaverkko.dbSource = "einoleino.txt";
+            } else if (sanaverkko.dbSource === "einoleino.txt") {
+                sanaverkko.dbSource = "darwin.txt";
+            } else if (sanaverkko.dbSource === "darwin.txt") {
+                sanaverkko.dbSource = "nsoe.txt";
+            }
+
+            dbSource = document.getElementById("dbSource");
+            dbSource.innerHTML = "Database source: " + sanaverkko.dbSource;
+            sanaverkko.setDBSource(sanaverkko.dbSource);
+        });
 
         setup = () => {
             createCanvas(windowWidth, windowHeight);
+            sanaverkko.setDBSource("nsoe.txt");
         }
 
         draw = () => {
