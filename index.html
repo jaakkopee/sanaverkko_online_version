@@ -249,6 +249,7 @@
         function logSentence() {
             var log = document.getElementById("log");
             log.innerHTML += "<br>" + sanaverkko.generatedSentence;
+
             if (log.innerHTML.length > 1000) {
                 log.innerHTML = "Generated sentences:";
             }
