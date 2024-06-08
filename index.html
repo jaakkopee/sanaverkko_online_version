@@ -18,256 +18,290 @@
         windowWidth = 1024;
         windowHeight = 768;
         // create a new instance of Sanaverkko
-        const sanaverkko = new Sanaverkko();
-        const SanaverkkoControls = {
-            setWordGenerationThreshold: function(value) {
-                sanaverkko.setWordGenerationThreshold(value);
-            },
-            setNeuronActivationIncreaseDecreaseFactor: function(value) {
-                sanaverkko.setNeuronActivationIncreaseDecreaseFactor(value);
-            },
-            setNetworkLearningRate: function(value) {
-                sanaverkko.setNetworkLearningRate(value);
-            },
-            setBackPropagationErrorInfluence: function(value) {
-                sanaverkko.setBackPropagationErrorInfluence(value);
-            },
-            setBackPropagationTarget: function(value) {
-                sanaverkko.setBackPropagationTarget(value);
-            },
-            setSigmoidFunctionScale: function(value) {
-                sanaverkko.setSigmoidFunctionScale(value);
-            },
-            setNetworkVisualisationZoom: function(value) {
-                sanaverkko.setNetworkVisualisationZoom(value);
-            },
-            setNetworkVisualisationRotation: function(value) {
-                sanaverkko.setNetworkVisualisationRotation(value);
-            },
-            setSeedSentence: function(value) {
-                sanaverkko.setSeedSentence(value);
-            },
-            setInheritanceGematriaWeightSetting: function(value) {
-                sanaverkko.setInheritanceGematriaWeightSetting(value);
+        const sanaverkko = new Network();
+        sanaverkko.setWordGenerationThreshold(0.5);
+        sanaverkko.setActivationChangeFactor(0.5);
+        sanaverkko.setLearningRate(0.5);
+        sanaverkko.setErrorInfluenceFactor(0.5);
+        sanaverkko.setSigmoidScale(0.5);
+        sanaverkko.setSetWeightsByGematria(false);
+        sanaverkko.addSentence("The quick brown fox jumps over the lazy dog.");
+        sanaverkko.setZoom(1);
+
+        //html elements, added to dom
+        var input;
+        var button;
+        var slider;
+        var slider2;
+        var slider3;
+        var slider4;
+        var slider5;
+        var slider6;
+        var slider7;
+        var slider8;
+        var tickbox;
+
+        //parameter monitoring
+        dom = document.createElement("p");
+        dom.innerHTML = "Word generation threshold";
+        document.body.appendChild(dom);
+        dom.style.position = "absolute";
+        dom.style.left = "10px";
+        dom.style.top = "10px";
+        dom.style.color = "white";
+        dom.id = "wordGenerationThreshold";
+
+        dom = document.createElement("p");
+        dom.innerHTML = "Activation change factor";
+        document.body.appendChild(dom);
+        dom.style.position = "absolute";
+        dom.style.left = "10px";
+        dom.style.top = "40px";
+        dom.style.color = "white";
+        dom.id = "activationChangeFactor";
+
+        dom = document.createElement("p");
+        dom.innerHTML = "Learning rate";
+        document.body.appendChild(dom);
+        dom.style.position = "absolute";
+        dom.style.left = "10px";
+        dom.style.top = "70px";
+        dom.style.color = "white";
+        dom.id = "learningRate";
+
+        dom = document.createElement("p");
+        dom.innerHTML = "Error influence factor";
+        document.body.appendChild(dom);
+        dom.style.position = "absolute";
+        dom.style.left = "10px";
+        dom.style.top = "100px";
+        dom.style.color = "white";
+        dom.id = "errorInfluenceFactor";
+
+        dom = document.createElement("p");
+        dom.innerHTML = "Sigmoid scale";
+        document.body.appendChild(dom);
+        dom.style.position = "absolute";
+        dom.style.left = "10px";
+        dom.style.top = "130px";
+        dom.style.color = "white";
+        dom.id = "sigmoidScale";
+
+        dom = document.createElement("p");
+        dom.innerHTML = "Zoom";
+        document.body.appendChild(dom);
+        dom.style.position = "absolute";
+        dom.style.left = "10px";
+        dom.style.top = "160px";
+        dom.style.color = "white";
+        dom.id = "zoom";
+
+        dom = document.createElement("p");
+        dom.innerHTML = "Sentence generation threshold";
+        document.body.appendChild(dom);
+        dom.style.position = "absolute";
+        dom.style.left = "10px";
+        dom.style.top = "190px";
+        dom.style.color = "white";
+        dom.id = "sentenceGenerationThreshold";
+
+        dom = document.createElement("p");
+        dom.innerHTML = "Target activation";
+        document.body.appendChild(dom);
+        dom.style.position = "absolute";
+        dom.style.left = "10px";
+        dom.style.top = "220px";
+        dom.style.color = "white";
+        dom.id = "targetActivation";
+
+
+
+        function createInput(x, y) {
+            var dom = document.createElement("input");
+            dom.type = "text";
+            document.body.appendChild(dom);
+            dom.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    sanaverkko.addSentence(dom.value);
+                    dom.value = "";
+                }
+            });
+            //position the input element
+            dom.style.position = "absolute";
+            dom.style.left = x + "px";
+            dom.style.top = y + "px";
+            return dom;
+
+        }
+
+        function createButton(value, x, y) {
+            var dom = document.createElement("button");
+            dom.innerHTML = value;
+            document.body.appendChild(dom);
+            dom.addEventListener("click", function() {
+                sanaverkko.addSentence(input.value);
+                input.value = "";
+            });
+            //position the button element
+            dom.style.position = "absolute";
+            dom.style.left = x + "px";
+            dom.style.top = y + "px";
+            return dom;
+
+        }
+
+        function createSlider(min, max, value, step, x, y) {
+            var dom = document.createElement("input");
+            dom.type = "range";
+            dom.min = min;
+            dom.max = max;
+            dom.value = value;
+            dom.step = step;
+            //event listener for slider
+            dom.addEventListener("input", function() {
+                if (dom === slider) {
+                    var value = dom.value*200;
+                    sanaverkko.setWordGenerationThreshold(value);
+                    monitor = document.getElementById("wordGenerationThreshold");
+                    monitor.innerHTML = "Word generation threshold: " + value;
+
+                } else if (dom === slider2) {
+                    sanaverkko.setActivationChangeFactor(dom.value);
+                    monitor = document.getElementById("activationChangeFactor");
+                    monitor.innerHTML = "Activation change factor: " + dom.value;
+
+                } else if (dom === slider3) {
+                    sanaverkko.setLearningRate(dom.value);
+                    monitor = document.getElementById("learningRate");
+                    monitor.innerHTML = "Learning rate: " + dom.value;
+
+                } else if (dom === slider4) {
+                    sanaverkko.setErrorInfluenceFactor(dom.value);
+                    monitor = document.getElementById("errorInfluenceFactor");
+                    monitor.innerHTML = "Error influence factor: " + dom.value;
+
+                } else if (dom === slider5) {
+                    var value = dom.value*200;
+                    sanaverkko.setSigmoidScale(value);
+                    monitor = document.getElementById("sigmoidScale");
+                    monitor.innerHTML = "Sigmoid scale: " + value;
+
+                } else if (dom === slider6) {
+                    sanaverkko.setZoom(dom.value);
+                    monitor = document.getElementById("zoom");
+                    monitor.innerHTML = "Zoom: " + dom.value;
+
+                } else if (dom === slider7) {
+                    var value = dom.value*2;
+                    sanaverkko.setSentenceGenerationThreshold(value);
+                    monitor = document.getElementById("sentenceGenerationThreshold");
+                    monitor.innerHTML = "Sentence generation threshold: " + value
+                }
+                else if (dom === slider8) {
+                    sanaverkko.setTarget(dom.value);
+                    monitor = document.getElementById("targetActivation");
+                    monitor.innerHTML = "Target activation: " + dom.value;
+                }
+            });
+            document.body.appendChild(dom);
+            //position the slider element
+            dom.style.position = "absolute";
+            dom.style.left = x + "px";
+            dom.style.top = y + "px";
+            return dom;
+        }
+
+
+
+
+        //create html elements
+        function createElements() {
+            input = createInput(10, 250);
+            button = createButton("Add sentence", 10, 280);
+            slider = createSlider(0, 1, 0.5, 0.01, 200, 10);
+            slider2 = createSlider(0, 1, 0.5, 0.01, 200, 40);
+            slider3 = createSlider(0, 1, 0.5, 0.01, 200, 70);
+            slider4 = createSlider(0, 1, 0.5, 0.01, 200, 100);
+            slider5 = createSlider(0, 1, 0.5, 0.01, 200, 130);
+            slider6 = createSlider(0, 1, 0.5, 0.01, 200, 160);
+            slider7 = createSlider(0, 1, 0.5, 0.01, 200, 190);
+            slider8 = createSlider(-5, 5, 0, 0.01, 200, 220);
+            tickbox = document.createElement("input");
+            tickbox.type = "checkbox";
+            document.body.appendChild(tickbox);
+            tickbox.style.position = "absolute";
+            tickbox.style.left = "200";
+            tickbox.style.top = "190";
+        }
+        //add sliders to dom
+        createElements();
+
+        //create generated sentence log display
+        var log = document.createElement("p");
+        log.innerHTML = "Generated sentences:";
+        document.body.appendChild(log);
+        log.style.position = "absolute";
+        log.style.left = "10px";
+        log.style.top = "300px";
+        log.style.color = "white";
+        log.id = "log";
+
+        function logSentence() {
+            var log = document.getElementById("log");
+            log.innerHTML += "<br>" + sanaverkko.generatedSentence;
+            if (log.innerHTML.length > 1000) {
+                log.innerHTML = "Generated sentences:";
             }
-        };
-        // word generation threshold slider
-        wordGenerationThresholdSlider = document.createElement('input');
-        wordGenerationThresholdSlider.type = 'range';
-        wordGenerationThresholdSlider.min = 0;
-        wordGenerationThresholdSlider.max = 10;
-        wordGenerationThresholdSlider.value = 5;
-        wordGenerationThresholdSlider.step = 0.1;
-        wordGenerationThresholdSlider.oninput = function() {
-            SanaverkkoControls.setWordGenerationThreshold(this.value);
-        };
-        // position the slider
-        wordGenerationThresholdSlider.style.position = 'absolute';
-        wordGenerationThresholdSlider.style.top = '0';
-        wordGenerationThresholdSlider.style.left = '0';
-        // add the slider to the DOM
-        document.body.appendChild(wordGenerationThresholdSlider);
+        }
 
-        // neuron activation increase/decrease factor slider
-        neuronActivationIncreaseDecreaseFactorSlider = document.createElement('input');
-        neuronActivationIncreaseDecreaseFactorSlider.type = 'range';
-        neuronActivationIncreaseDecreaseFactorSlider.min = 0;
-        neuronActivationIncreaseDecreaseFactorSlider.max = 10;
-        neuronActivationIncreaseDecreaseFactorSlider.value = 5;
-        neuronActivationIncreaseDecreaseFactorSlider.step = 0.1;
-        neuronActivationIncreaseDecreaseFactorSlider.oninput = function() {
-            SanaverkkoControls.setNeuronActivationIncreaseDecreaseFactor(this.value);
-        };
-        // position the slider
-        neuronActivationIncreaseDecreaseFactorSlider.style.position = 'absolute';
-        neuronActivationIncreaseDecreaseFactorSlider.style.top = '0';
-        neuronActivationIncreaseDecreaseFactorSlider.style.left = '100px';
-        // add the slider to the DOM
-        document.body.appendChild(neuronActivationIncreaseDecreaseFactorSlider);
-     
-        // network learning rate slider
-        networkLearningRateSlider = document.createElement('input');
-        networkLearningRateSlider.type = 'range';
-        networkLearningRateSlider.min = 0;
-        networkLearningRateSlider.max = 10;
-        networkLearningRateSlider.value = 5;
-        networkLearningRateSlider.step = 0.1;
-        networkLearningRateSlider.oninput = function() {
-            SanaverkkoControls.setNetworkLearningRate(this.value);
-        };
-        // position the slider
-        networkLearningRateSlider.style.position = 'absolute';
-        networkLearningRateSlider.style.top = '0';
-        networkLearningRateSlider.style.left = '200px';
-        // add the slider to the DOM
-        document.body.appendChild(networkLearningRateSlider);
-     
-        // back propagation error influence slider
-        backPropagationErrorInfluenceSlider = document.createElement('input');
-        backPropagationErrorInfluenceSlider.type = 'range';
-        backPropagationErrorInfluenceSlider.min = 0;
-        backPropagationErrorInfluenceSlider.max = 10;
-        backPropagationErrorInfluenceSlider.value = 5;
-        backPropagationErrorInfluenceSlider.step = 0.1;
-        backPropagationErrorInfluenceSlider.oninput = function() {
-            SanaverkkoControls.setBackPropagationErrorInfluence(this.value);
-        };
-        // position the slider
-        backPropagationErrorInfluenceSlider.style.position = 'absolute';
-        backPropagationErrorInfluenceSlider.style.top = '0';
-        backPropagationErrorInfluenceSlider.style.left = '300px';
-        // add the slider to the DOM
-        document.body.appendChild(backPropagationErrorInfluenceSlider);
-     
-        // back propagation target slider
-        backPropagationTargetSlider = document.createElement('input');
-        backPropagationTargetSlider.type = 'range';
-        backPropagationTargetSlider.min = 0;
-        backPropagationTargetSlider.max = 10;
-        backPropagationTargetSlider.value = 5;
-        backPropagationTargetSlider.step = 0.1;
-        backPropagationTargetSlider.oninput = function() {
-            SanaverkkoControls.setBackPropagationTarget(this.value);
-        };
-        // position the slider
-        backPropagationTargetSlider.style.position = 'absolute';
-        backPropagationTargetSlider.style.top = '0';
-        backPropagationTargetSlider.style.left = '400px';
-        // add the slider to the DOM
-        document.body.appendChild(backPropagationTargetSlider);
-        // sigmoid function scale slider
-        sigmoidFunctionScaleSlider = document.createElement('input');
-        sigmoidFunctionScaleSlider.type = 'range';
-        sigmoidFunctionScaleSlider.min = 0;
-        sigmoidFunctionScaleSlider.max = 10;
-        sigmoidFunctionScaleSlider.value = 5;
-        sigmoidFunctionScaleSlider.step = 0.1;
-        sigmoidFunctionScaleSlider.oninput = function() {
-            SanaverkkoControls.setSigmoidFunctionScale(this.value);
-        };
-        // position the slider
-        sigmoidFunctionScaleSlider.style.position = 'absolute';
-        sigmoidFunctionScaleSlider.style.top = '0';
-        sigmoidFunctionScaleSlider.style.left = '500px';
-        // add the slider to the DOM
-        document.body.appendChild(sigmoidFunctionScaleSlider);
-        // network visualisation zoom slider
-        networkVisualisationZoomSlider = document.createElement('input');
-        networkVisualisationZoomSlider.type = 'range';
-        networkVisualisationZoomSlider.min = 0;
-        networkVisualisationZoomSlider.max = 10;
-        networkVisualisationZoomSlider.value = 5;
-        networkVisualisationZoomSlider.step = 0.1;
-        networkVisualisationZoomSlider.oninput = function() {
-            SanaverkkoControls.setNetworkVisualisationZoom(this.value);
-        };
-        // position the slider
-        networkVisualisationZoomSlider.style.position = 'absolute';
-        networkVisualisationZoomSlider.style.top = '0';
-        networkVisualisationZoomSlider.style.left = '600px';
-        // add the slider to the DOM
-        document.body.appendChild(networkVisualisationZoomSlider);
-        // network visualisation rotation slider
-        networkVisualisationRotationSlider = document.createElement('input');
-        networkVisualisationRotationSlider.type = 'range';
-        networkVisualisationRotationSlider.min = 0;
-        networkVisualisationRotationSlider.max = 10;
-        networkVisualisationRotationSlider.value = 5;
-        networkVisualisationRotationSlider.step = 0.1;
-        networkVisualisationRotationSlider.oninput = function() {
-            SanaverkkoControls.setNetworkVisualisationRotation(this.value);
-        };
-        // position the slider
-        networkVisualisationRotationSlider.style.position = 'absolute';
-        networkVisualisationRotationSlider.style.top = '0';
-        networkVisualisationRotationSlider.style.left = '700px';
-        // add the slider to the DOM
-        document.body.appendChild(networkVisualisationRotationSlider);
-        // seed sentence input box
-        seedSentenceInput = document.createElement('input');
-        seedSentenceInput.type = 'text';
-        seedSentenceInput.value = 'put some words here';
-        seedSentenceInput.oninput = function() {
-            SanaverkkoControls.setSeedSentence(this.value);
-        };
-        // position the input box
-        seedSentenceInput.style.position = 'absolute';
-        seedSentenceInput.style.top = '0';
-        seedSentenceInput.style.left = '800px';
-        // add the input box to the DOM
-        document.body.appendChild(seedSentenceInput);
-        //inheritance/gematria weight setting tickbox
-        inheritanceGematriaWeightSettingTickbox = document.createElement('input');
-        inheritanceGematriaWeightSettingTickbox.type = 'checkbox';
-        inheritanceGematriaWeightSettingTickbox.checked = false;
-        inheritanceGematriaWeightSettingTickbox.onchange = function() {
-            SanaverkkoControls.setInheritanceGematriaWeightSetting(this.checked);
-        };
-        // position the tickbox
-        inheritanceGematriaWeightSettingTickbox.style.position = 'absolute';
-        inheritanceGematriaWeightSettingTickbox.style.top = '0';
-        inheritanceGematriaWeightSettingTickbox.style.left = '1000px';
-        // add the tickbox to the DOM
-        document.body.appendChild(inheritanceGematriaWeightSettingTickbox);
+        //read db
+        readDB("nsoe.txt");
 
-        // init p5.js canvas
-        function setup() {
+        setup = () => {
             createCanvas(windowWidth, windowHeight);
         }
 
-        // draw the network visualisation and iterate sanaverkko
-        function draw() {
+        draw = () => {
+            sanaverkko.update();
+            //if sanaverkko has generated a sentence, log it
+            if (sanaverkko.generatedSentence != "") {
+                logSentence();
+            }
             background(0);
-            sanaverkko.calculateActivation();
-            sanaverkko.backPropagate();
-            // every word is also a neuron
             for (let i = 0; i < sanaverkko.words.length; i++) {
-                var x = map(sanaverkko.words[i].position.x, -1, 1, 0, width);
-                var y = map(sanaverkko.words[i].position.y, -1, 1, 0, height);
-                if (sanaverkko.words[i].activation > 0) {
-                    var r = map(sanaverkko.words[i].activation, 0, 1, 0, 255);
-                    var g = 0;
-                    var b = 0;
-                    var color = color(r, g, b);
-                } else {
-                    var r = 0;
-                    var g = 0;
-                    var b = map(sanaverkko.words[i].activation, -1, 0, 0, 255);
-                    var color = color(r, g, b);
-                }
-                fill(color);
-                ellipse(x, y, 10, 10);
-                //type the word
-                fill(255);
-                text(sanaverkko.words[i].word, x, y);
-                //show activation values
-                text(sanaverkko.words[i].activation, x, y+10);
-                //draw the connections
+                var x = sanaverkko.words[i].x;
+                var y = sanaverkko.words[i].y;
+                //first draw the connections
                 for (let j = 0; j < sanaverkko.words[i].connections.length; j++) {
-                    var x2 = map(sanaverkko.words[i].connections[j].position.x, -1, 1, 0, width);
-                    var y2 = map(sanaverkko.words[i].connections[j].position.y, -1, 1, 0, height);
-                    if (sanaverkko.words[i].connections[j].weight < 0) {
-                        var r = 0;
-                        var g = 0;
-                        var b = map(sanaverkko.words[i].connections[j].weight, -1, 0, 0, 255);
+                    var connection = sanaverkko.words[i].connections[j];
+                    var x2 = connection.word.x;
+                    var y2 = connection.word.y;
+                    console.log("drawing connection from " + x + ", " + y + " to " + x2 + ", " + y2);
+                    if (connection.weight > 0) {
+                        stroke(255*abs(connection.weight)%255, 0, 0);
                     } else {
-                        var r = map(sanaverkko.words[i].connections[j].weight, 0, 1, 0, 255);
-                        var g = 0;
-                        var b = 0;
+                        stroke(0, 0, 255*abs(connection.weight)%255);
                     }
-                    var color = color(r, g, b);
-                    stroke(color);
-                    //line width 5 pixels
                     strokeWeight(5);
-                    
                     line(x, y, x2, y2);
                 }
+                strokeWeight(1);
+                stroke(0);
 
+                //then draw neural circles, words and activations
+                if (sanaverkko.words[i].activation < 0) {
+                    fill(0, 127, 255*abs(sanaverkko.words[i])%255);
+                } else {
+                    fill(255*abs(sanaverkko.words[i].activation)%255 , 127, 0);
+                }
+                ellipse(x, y, 50, 50);
+                fill(255);
+                textSize(20);
+                text(sanaverkko.words[i].string, x-10, y);
+                textSize(10);
+                text(sanaverkko.words[i].activation, x-10, y+20);
             }
-
-
         }
-        
     </script>
-</body>
-</html>
+
+
