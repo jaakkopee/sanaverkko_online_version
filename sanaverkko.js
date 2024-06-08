@@ -351,6 +351,12 @@ function Network() {
         this.placeWordsInCircle(zoom*6);
     }
 
+    this.setTargetActivation = function(target) {
+        for (var i = 0; i < this.words.length; i++) {
+            this.words[i].setTarget(target);
+        }
+    }
+
     this.placeWordsInCircle = function(zoom) {
         var angle = 2 * Math.PI / this.words.length;
         var screenCenterX = window.innerWidth / 2;
