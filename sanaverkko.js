@@ -160,6 +160,7 @@ function Word(string, network) {
             
             var newWord = getWordFromDB(this.gematria);
             this.changeWord(newWord);
+            this.activation = 0;
         }
         return this.activation;
     }
