@@ -155,15 +155,11 @@ function Word(string, network) {
             activationSign = -1;
         }
         this.activation += this.activationChangeFactor * activationSign;
-        if (this.activation > this.wordGenerationThreshold) {
+        if (this.activation > this.wordGenerationThreshold || this.activation < -this.wordGenerationThreshold) {
             this.changeWord(getWordFromDB(this.gematria));
-            this.activation = this.wordGenerationThreshold;
+            this.activation = 0;
         }
-        if (this.activation < -this.wordGenerationThreshold) {
-            this.changeWord(getWordFromDB(this.gematria));
-            this.activation = -this.wordGenerationThreshold;
-        }
-        
+
         return this.activation;
     }
 
