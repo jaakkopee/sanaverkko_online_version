@@ -139,7 +139,6 @@ function Word(string, network) {
     }
 
     this.addConnection = function(word) {
-        console.log("adding connection: " + this.string + " -> " + word.string);
         var commonGematria = this.gematria + word.gematria;
         commonGematria -= commonGematria / 2;
         var weight = commonGematria / 1000;
@@ -155,14 +154,13 @@ function Word(string, network) {
         if (sum < 0) {
             activationSign = -1;
         }
+        this.activation += this.activationChangeFactor * activationSign;
 
         if (this.activation > this.wordGenerationThreshold || this.activation < -this.wordGenerationThreshold) {
-            console.log("generating new word");
+            
             var newWord = getWordFromDB(this.gematria);
             this.changeWord(newWord);
-            this.activation = 0;
         }
-        this.activation += this.activationChangeFactor * activationSign;
         return this.activation;
     }
 
@@ -248,12 +246,7 @@ function Network() {
         }
         //place words in circle
         this.placeWordsInCircle(6);
-        for (var i = 0; i < this.words.length; i++) {
-            console.log(this.words[i].string);
-            console.log(this.words[i].connections);
-            console.log(this.words[i].x + ", " + this.words[i].y);
 
-        }
     }
 
     this.setSentenceGenerationThreshold = function(threshold) {
@@ -270,8 +263,6 @@ function Network() {
         }
         sum /= this.words.length;
         if (sum > this.sentenceGenerationThreshold || sum < -this.sentenceGenerationThreshold) {
-            console.log("generating sentence");
-            console.log("activation sum: " + sum);
             this.generateSentence();
         }
     }
@@ -281,7 +272,6 @@ function Network() {
         for (var i = 0; i < this.words.length; i++) {
             sentence += this.words[i].string + " ";
         }
-        console.log(sentence);
         this.generatedSentence = sentence;
         //gematria data plot
         var gematriaData = "";

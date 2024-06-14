@@ -123,7 +123,7 @@
         dom.style.color = "white";
         dom.id = "targetActivation";
 
-        function createTickBox(x, y) {
+        function sv_createTickBox(x, y) {
             var dom = document.createElement("input");
             dom.type = "checkbox";
             document.body.appendChild(dom);
@@ -145,7 +145,7 @@
             return dom;
         }
 
-        function createInput(x, y) {
+        function sv_createInput(x, y) {
             var dom = document.createElement("input");
             dom.type = "text";
             document.body.appendChild(dom);
@@ -163,7 +163,7 @@
 
         }
 
-        function createButton(value, x, y) {
+        function sv_createButton(value, x, y) {
             var dom = document.createElement("button");
             dom.innerHTML = value;
             document.body.appendChild(dom);
@@ -179,7 +179,7 @@
 
         }
 
-        function createSlider(min, max, value, step, x, y) {
+        function sv_createSlider(min, max, value, step, x, y) {
             var dom = document.createElement("input");
             dom.type = "range";
             dom.min = min;
@@ -245,33 +245,20 @@
 
         //create html elements
         function createElements() {
-            input = createInput(10, 250);
-            button = createButton("Add sentence", 10, 280);
-            slider = createSlider(-2, 2, 0.5, 0.01, 200, 10);
-            slider2 = createSlider(0, 1, 0.5, 0.01, 200, 40);
-            slider3 = createSlider(0, 1, 0.5, 0.01, 200, 70);
-            slider4 = createSlider(0, 1, 0.5, 0.01, 200, 100);
-            slider5 = createSlider(0, 1, 0.5, 0.01, 200, 130);
-            slider6 = createSlider(0, 1, 0.5, 0.01, 200, 160);
-            slider7 = createSlider(-5, 5, 0, 0.01, 200, 190);
-            slider8 = createSlider(-5, 5, 0, 0.01, 200, 220);
-            tickbox = createTickBox(200, 300);
+            input = sv_createInput(10, 250);
+            button = sv_createButton("Add sentence", 10, 280);
+            slider = sv_createSlider(-2, 2, 0.5, 0.01, 200, 10);
+            slider2 = sv_createSlider(0, 1, 0.5, 0.01, 200, 40);
+            slider3 = sv_createSlider(0, 1, 0.5, 0.01, 200, 70);
+            slider4 = sv_createSlider(0, 1, 0.5, 0.01, 200, 100);
+            slider5 = sv_createSlider(0, 1, 0.5, 0.01, 200, 130);
+            slider6 = sv_createSlider(0, 1, 0.5, 0.01, 200, 160);
+            slider7 = sv_createSlider(-5, 5, 0, 0.01, 200, 190);
+            slider8 = sv_createSlider(-5, 5, 0, 0.01, 200, 220);
+            tickbox = sv_createTickBox(200, 300);
         }
         //add sliders to dom
         createElements();
-
-        //create generated sentence log display
-        var log = document.createElement("div");
-        log.innerHTML = "Generated sentences:";
-        document.body.appendChild(log);
-        log.style.position = "absolute";
-        log.style.left = "10px";
-        log.style.top = "400px";
-        log.style.color = "#ff22aa";
-        log.style.fontSize = "30px";
-        log.style.overflow = "scroll";
-        log.style.height = "200px";
-        log.id = "log";
 
         var hiddenLog = document.createElement("div");
         hiddenLog.style.bgcolor = "black";
@@ -382,7 +369,7 @@
                     var connection = sanaverkko.words[i].connections[j];
                     var x2 = connection.word.x;
                     var y2 = connection.word.y;
-                    console.log("drawing connection from " + x + ", " + y + " to " + x2 + ", " + y2);
+                    
                     if (connection.weight > 0) {
                         stroke(127*abs(connection.weight)+63%255, 0, 0);
                     } else {
