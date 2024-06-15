@@ -6,6 +6,9 @@ var db = [];
 validSymbols = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "å", "ä", "ö"];
 
 function getGematria(word) {
+    if (word == null || word == ""){
+        return 0;
+    }
     var gematria = 0;
     for (var i = 0; i < word.length; i++) {
         gematria += gematriaTable[word[i]];
@@ -13,20 +16,20 @@ function getGematria(word) {
     return gematria;
 }
 
-//get news from api
-var apikey = "23f015deb1114aa6b326b2481e01b54f";
 
-var url = `https://newsapi.org/v2/everything?q=finland&apiKey=${apikey}`;
-
-var req = new Request(url);
 
 //fetch words from article content as an array of strings
 function getNews() {
+    //get news from api
+    var apikey = "23f015deb1114aa6b326b2481e01b54f";
+    var url = `https://newsapi.org/v2/everything?q=finland&apiKey=${apikey}`;
+    var req = new Request(url);
     return fetch(req)
         .then(function (response) {
         return response.json();
-        })
-        .then(function (data) {
+        }
+    )
+    .then(function (data) {
         var articles = data.articles;
         var words = [];
         for (var i = 0; i < articles.length; i++) {
@@ -37,29 +40,37 @@ function getNews() {
             }
             var wordsInContent = content.split(" ");
             //remove non-alphabetic characters from words
-            wordsInContent = wordsInContent.map(function (word) {
+            for (var j = 0; j < wordsInContent.length; j++) {
                 // lower case
-                word = word.toLowerCase();
+                wordsInContent[j] = wordsInContent[j].toLowerCase();
                 // remove non-alphabetic characters
-                word = word.replace(/[^a-zåäö]/g, '');
-                return word;
-            });
+                wordsInContent[j] = wordsInContent[j].replace(/[^a-zåäö]/g, '');
+                if (wordsInContent[j] == "") {
+                    wordsInContent.splice(j, 1);
+                    j--;
+                }
+            }
             words = words.concat(wordsInContent);
         }
-        console.log(words);
         return words;
-    });
+    }
+    );
 }
-
-
 
 //read text file into db
 function readDB(filename) {
     if (filename == "news") {
         db = [];
         getNews().then(function (words) {
-            db = words;
-        });
+            for (var i = 0; i < words.length; i++) {
+                var word = words[i];
+                if (db.indexOf(word) == -1 && word != "") {
+                    db.push(word);
+                    console.log(word);
+            }
+        }
+        }
+        );
         return;
     }
     db = [];
