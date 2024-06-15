@@ -56,6 +56,7 @@ function getNews() {
 //read text file into db
 function readDB(filename) {
     if (filename == "news") {
+        db = [];
         getNews().then(function (words) {
             db = words;
         });
