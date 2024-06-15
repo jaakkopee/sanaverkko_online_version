@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>News</title>
+    <script src="newsAgent.js"></script>
+    <meta charset="utf-8">
+
+</head>
+<body>
+    <h1>News</h1>
+    <div id="news"></div>
+
+    <script>
+        getNews().then(function(news) {
+            console.log(news);
+            displayNews(news);
+        });
+        
+        function displayNews(news) {
+            var newsDiv = document.getElementById('news');
+            for (var i = 0; i < news.length; i++) {
+                var newsWord = news[i];
+                var newsItemDiv = document.createElement('div');
+                newsItemDiv.innerHTML += newsWord;
+                newsDiv.appendChild(newsItemDiv);
+            }
+        }
+        
+    </script>
+</body>
+</html>
