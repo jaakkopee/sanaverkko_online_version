@@ -199,6 +199,7 @@ function Word(string, network) {
             activationSign = -1;
         }
         this.activation += this.activationChangeFactor * activationSign;
+
         if (this.activation > this.wordGenerationThreshold || this.activation < -this.wordGenerationThreshold) {
             this.changeWord(getWordFromDB(this.gematria));
             this.activation = 0;
