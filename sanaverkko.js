@@ -16,63 +16,8 @@ function getGematria(word) {
     return gematria;
 }
 
-
-
-//fetch words from article content as an array of strings
-function getNews() {
-    //get news from api
-    var apikey = "23f015deb1114aa6b326b2481e01b54f";
-    var url = `https://newsapi.org/v2/everything?q=finland&apiKey=${apikey}`;
-    var req = new Request(url);
-    return fetch(req)
-        .then(function (response) {
-        return response.json();
-        }
-    )
-    .then(function (data) {
-        var articles = data.articles;
-        var words = [];
-        for (var i = 0; i < articles.length; i++) {
-            var article = articles[i];
-            var content = article.content;
-            if (content == null) {
-                continue;
-            }
-            var wordsInContent = content.split(" ");
-            //remove non-alphabetic characters from words
-            for (var j = 0; j < wordsInContent.length; j++) {
-                // lower case
-                wordsInContent[j] = wordsInContent[j].toLowerCase();
-                // remove non-alphabetic characters
-                wordsInContent[j] = wordsInContent[j].replace(/[^a-zåäö]/g, '');
-                if (wordsInContent[j] == "") {
-                    wordsInContent.splice(j, 1);
-                    j--;
-                }
-            }
-            words = words.concat(wordsInContent);
-        }
-        return words;
-    }
-    );
-}
-
 //read text file into db
 function readDB(filename) {
-    if (filename == "news") {
-        db = [];
-        getNews().then(function (words) {
-            for (var i = 0; i < words.length; i++) {
-                var word = words[i];
-                if (db.indexOf(word) == -1 && word != "") {
-                    db.push(word);
-                    console.log(word);
-            }
-        }
-        }
-        );
-        return;
-    }
     db = [];
     var rawFile = new XMLHttpRequest();
     rawFile.open("GET", filename, false);
