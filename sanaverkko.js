@@ -156,13 +156,18 @@ function Word(string, network) {
             activationSign = -1;
         }
 
-        if (this.activation > this.wordGenerationThreshold || this.activation < -this.wordGenerationThreshold) {
+        this.activation = sigmoid(sum, this.sigmoidScale);
+
+        if (this.activation > this.wordGenerationThreshold) {
             console.log("generating new word");
             var newWord = getWordFromDB(this.gematria);
             this.changeWord(newWord);
             this.activation = 0;
         }
         this.activation += this.activationChangeFactor * activationSign;
+        if (this.activation < 0) {
+            this.activation = 0;
+        }       
         return this.activation;
     }
 
@@ -204,9 +209,9 @@ function Word(string, network) {
     }
 }
 
-
+//sigmoid function, value range 0 to 1
 function sigmoid(x, scale){
-    return scale*(1/(1 + Math.exp(-x))-0.5);
+    return 1 / (1 + Math.exp(-x / scale));
 }
 
 
@@ -269,7 +274,7 @@ function Network() {
             sum += this.words[i].activation;
         }
         sum /= this.words.length;
-        if (sum > this.sentenceGenerationThreshold || sum < -this.sentenceGenerationThreshold) {
+        if (sum > this.sentenceGenerationThreshold) {
             console.log("generating sentence");
             console.log("activation sum: " + sum);
             this.generateSentence();
