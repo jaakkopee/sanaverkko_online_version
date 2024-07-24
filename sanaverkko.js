@@ -6,6 +6,9 @@ var db = [];
 validSymbols = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "å", "ä", "ö"];
 
 function getGematria(word) {
+    if (word == null || word == ""){
+        return 0;
+    }
     var gematria = 0;
     for (var i = 0; i < word.length; i++) {
         gematria += gematriaTable[word[i]];
@@ -27,15 +30,13 @@ function readDB(filename) {
                     var words = lines[i].split(" ");
                     for (var j = 0; j < words.length; j++) {
                         var word = words[j].toLowerCase();
-                        var valid = true;
+                        var strippedWord = "";
                         for (var k = 0; k < word.length; k++) {
-                            if (validSymbols.indexOf(word[k]) == -1) {
-                                valid = false;
+                            if (validSymbols.indexOf(word[k]) != -1) {
+                                strippedWord += word[k];
                             }
                         }
-                        if (valid) {
-                            db.push(word);
-                        }
+                        db.push(strippedWord);
                     }
                 }
             }
@@ -139,7 +140,6 @@ function Word(string, network) {
     }
 
     this.addConnection = function(word) {
-        console.log("adding connection: " + this.string + " -> " + word.string);
         var commonGematria = this.gematria + word.gematria;
         commonGematria -= commonGematria / 2;
         var weight = commonGematria / 1000;
@@ -155,19 +155,13 @@ function Word(string, network) {
         if (sum < 0) {
             activationSign = -1;
         }
+        this.activation += this.activationChangeFactor * activationSign;
 
-        this.activation = sigmoid(sum, this.sigmoidScale);
-
-        if (this.activation > this.wordGenerationThreshold) {
-            console.log("generating new word");
-            var newWord = getWordFromDB(this.gematria);
-            this.changeWord(newWord);
+        if (this.activation > this.wordGenerationThreshold || this.activation < -this.wordGenerationThreshold) {
+            this.changeWord(getWordFromDB(this.gematria));
             this.activation = 0;
         }
-        this.activation += this.activationChangeFactor * activationSign;
-        if (this.activation < 0) {
-            this.activation = 0;
-        }       
+
         return this.activation;
     }
 
@@ -209,9 +203,9 @@ function Word(string, network) {
     }
 }
 
-//sigmoid function, value range 0 to 1
+
 function sigmoid(x, scale){
-    return 1 / (1 + Math.exp(-x / scale));
+    return scale*(1/(1 + Math.exp(-x))-0.5);
 }
 
 
@@ -253,12 +247,7 @@ function Network() {
         }
         //place words in circle
         this.placeWordsInCircle(6);
-        for (var i = 0; i < this.words.length; i++) {
-            console.log(this.words[i].string);
-            console.log(this.words[i].connections);
-            console.log(this.words[i].x + ", " + this.words[i].y);
 
-        }
     }
 
     this.setSentenceGenerationThreshold = function(threshold) {
@@ -274,9 +263,7 @@ function Network() {
             sum += this.words[i].activation;
         }
         sum /= this.words.length;
-        if (sum > this.sentenceGenerationThreshold) {
-            console.log("generating sentence");
-            console.log("activation sum: " + sum);
+        if (sum > this.sentenceGenerationThreshold || sum < -this.sentenceGenerationThreshold) {
             this.generateSentence();
         }
     }
@@ -286,7 +273,6 @@ function Network() {
         for (var i = 0; i < this.words.length; i++) {
             sentence += this.words[i].string + " ";
         }
-        console.log(sentence);
         this.generatedSentence = sentence;
         //gematria data plot
         var gematriaData = "";
