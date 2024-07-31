@@ -27,6 +27,18 @@
         sanaverkko.setSetWeightsByGematria(false);
         sanaverkko.addSentence("The quick brown fox jumps over the lazy dog.");
         sanaverkko.setZoom(1);
+        var hiddenLayer1 = new HiddenLayer(sanaverkko);
+        var hiddenLayer2 = new HiddenLayer(sanaverkko);
+
+        hiddenLayer1.addNeurons();
+        hiddenLayer2.addNeurons();
+
+        sanaverkko.addHiddenLayer(hiddenLayer1);
+        sanaverkko.addHiddenLayer(hiddenLayer2);
+
+
+
+
 
         //html elements, added to dom
         var input;
@@ -152,6 +164,10 @@
             dom.addEventListener("keydown", function(event) {
                 if (event.key === "Enter") {
                     sanaverkko.addSentence(dom.value);
+                    hiddenLayer1 = new HiddenLayer(sanaverkko);
+                    hiddenLayer2 = new HiddenLayer(sanaverkko);
+                    hiddenLayer1.addNeurons();
+                    hiddenLayer2.addNeurons();
                     dom.value = "";
                 }
             });
@@ -355,6 +371,8 @@
 
         draw = () => {
             sanaverkko.update();
+            hiddenLayer1.update();
+            hiddenLayer2.update();
             //if sanaverkko has generated a sentence, log it
             if (sanaverkko.generatedSentence != "") {
                 logSentence();
@@ -394,6 +412,27 @@
                 text(sanaverkko.words[i].string, x-10, y);
                 textSize(10);
                 text(sanaverkko.words[i].activation, x-10, y+20);
+
+                //then the hidden layers
+                for (neuron in hiddenLayer1.neurons) {
+                    var x = hiddenLayer1.neurons[neuron].x;
+                    var y = hiddenLayer1.neurons[neuron].y;
+                    fill(255);
+                    ellipse(x, y, 50, 50);
+                    fill(0);
+                    textSize(20);
+                    text(hiddenLayer1.neurons[neuron].activation, x-10, y);
+                }
+
+                for (neuron in hiddenLayer2.neurons) {
+                    var x = hiddenLayer2.neurons[neuron].x;
+                    var y = hiddenLayer2.neurons[neuron].y;
+                    fill(255);
+                    ellipse(x, y, 50, 50);
+                    fill(0);
+                    textSize(20);
+                    text(hiddenLayer2.neurons[neuron].activation, x-10, y);
+                }
             }
         }
     </script>
